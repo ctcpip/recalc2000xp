@@ -1,0 +1,22 @@
+{
+  "name": "recalc2000xp",
+  "private": true,
+  "homepage": "",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "Chris de Almeida",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "npm run lint && node --test",
+    "coverage": "node --test --experimental-test-coverage"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.4",
+    "eslint-config-ultra-mega": "^2.1.1"
+  }
+}

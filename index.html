@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Year-by-year retirement projection with inflation, Social Security, and long-term capital gains."
+    />
+    <meta name="color-scheme" content="light dark" />
+    <title>ReCalc 2000 XP</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <h1>ReCalc 2000 XP</h1>
+        <p class="header__subtitle">
+          A year-by-year retirement model: contributions until you retire, then
+          inflation-adjusted spending, Social Security, and LTCG tax on
+          withdrawals.
+        </p>
+      </header>
+
+      <form class="panel" id="inputs-form" autocomplete="off">
+        <h2>Assumptions</h2>
+        <p class="panel__intro">
+          Dollar signs, commas, and % are fine. Values are saved in this browser.
+        </p>
+        <p class="validation-error" id="errors" aria-live="polite"></p>
+
+        <div class="fieldset">
+          <h3>Portfolio</h3>
+          <div class="field-grid">
+            <div class="field">
+              <label for="currentAssets">Current assets</label>
+              <input id="currentAssets" name="currentAssets" type="text" inputmode="decimal" autocomplete="off" required />
+            </div>
+            <div class="field">
+              <label for="marginDebt">Margin debt</label>
+              <input id="marginDebt" name="marginDebt" type="text" inputmode="decimal" autocomplete="off" required />
+            </div>
+            <div class="field">
+              <label for="expectedCagr">Expected CAGR (%)</label>
+              <input id="expectedCagr" name="expectedCagr" type="text" inputmode="decimal" autocomplete="off" required />
+            </div>
+            <div class="field">
+              <label for="monthlyContribution">Monthly contribution</label>
+              <input id="monthlyContribution" name="monthlyContribution" type="text" inputmode="decimal" autocomplete="off" required />
+            </div>
+            <div class="field">
+              <label for="withdrawalRate">Withdrawal rate, safe (%)</label>
+              <input id="withdrawalRate" name="withdrawalRate" type="text" inputmode="decimal" autocomplete="off" required />
+            </div>
+          </div>
+        </div>
+
+        <div class="fieldset">
+          <h3>Ages</h3>
+          <div class="field-grid">
+            <div class="field">
+              <label for="currentAge">Current age</label>
+              <input id="currentAge" name="currentAge" type="number" min="0" max="120" step="1" required />
+            </div>
+            <div class="field">
+              <label for="retirementAge">Retirement age</label>
+              <input id="retirementAge" name="retirementAge" type="number" min="0" max="120" step="1" required />
+            </div>
+            <div class="field">
+              <label for="endAge">End age</label>
+              <input id="endAge" name="endAge" type="number" min="0" max="120" step="1" required />
+            </div>
+            <div class="field">
+              <label for="socialSecurityAge">Social Security age</label>
+              <input id="socialSecurityAge" name="socialSecurityAge" type="number" min="0" max="120" step="1" required />
+            </div>
+          </div>
+        </div>
+
+        <div class="fieldset">
+          <h3>Spending &amp; income</h3>
+          <div class="field-grid">
+            <div class="field">
+              <label for="desiredSpendToday">Desired annual spending (today $)</label>
+              <input id="desiredSpendToday" name="desiredSpendToday" type="text" inputmode="decimal" autocomplete="off" required />
+            </div>
+            <div class="field">
+              <label for="fixedSpend">Fixed spend</label>
+              <input id="fixedSpend" name="fixedSpend" type="text" inputmode="decimal" autocomplete="off" required />
+              <p class="field__hint">Nominal dollars every year; not inflated (mortgage, etc.).</p>
+            </div>
+            <div class="field">
+              <label for="inflation">Inflation (%)</label>
+              <input id="inflation" name="inflation" type="text" inputmode="decimal" autocomplete="off" required />
+            </div>
+            <div class="field">
+              <label for="ssBenefitToday">SS annual benefit (today $)</label>
+              <input id="ssBenefitToday" name="ssBenefitToday" type="text" inputmode="decimal" autocomplete="off" required />
+              <p class="field__hint">COLA = inflation, starting at SS age.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="fieldset">
+          <h3>Taxes</h3>
+          <div class="field-grid">
+            <div class="field">
+              <label for="standardDeduction">Standard deduction</label>
+              <input id="standardDeduction" name="standardDeduction" type="text" inputmode="decimal" autocomplete="off" required />
+            </div>
+            <div class="field">
+              <label for="gainsPercent">% of withdrawal = gains</label>
+              <input id="gainsPercent" name="gainsPercent" type="text" inputmode="decimal" autocomplete="off" required />
+            </div>
+            <div class="field">
+              <label for="ltcgRate">Federal LTCG tax rate (%)</label>
+              <input id="ltcgRate" name="ltcgRate" type="text" inputmode="decimal" autocomplete="off" required />
+            </div>
+            <div class="field">
+              <label for="stateCgRate">State capital gains tax rate (%)</label>
+              <input id="stateCgRate" name="stateCgRate" type="text" inputmode="decimal" autocomplete="off" required />
+              <p class="field__hint">Flat tax on taxable gains (e.g. IL 4.95%). Not reduced by the federal 0% bracket or standard deduction.</p>
+            </div>
+            <div class="field">
+              <label for="ltcgZeroBound">LTCG 0% bracket upper bound</label>
+              <input id="ltcgZeroBound" name="ltcgZeroBound" type="text" inputmode="decimal" autocomplete="off" required />
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <section class="panel" id="outlook-section" aria-live="polite">
+        <h2>Outlook</h2>
+        <div id="outlook"></div>
+        <div class="metrics" id="metrics"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Year-by-year</h2>
+        <p class="panel__intro">
+          Same layout as the spreadsheet: partial year on the first row, then one
+          row per age through end age.
+        </p>
+        <div class="column-picker">
+          <div class="column-picker__bar">
+            <h3>Columns</h3>
+            <button type="button" class="btn-text" id="reset-columns">Reset</button>
+          </div>
+          <p class="column-picker__hint">Check to show. Drag table headers to reorder.</p>
+          <ul class="column-list" id="column-list"></ul>
+        </div>
+        <div class="table-wrap" id="table-wrap"></div>
+        <ul class="legend">
+          <li><span class="legend__swatch legend__swatch--retired"></span>Retired (withdrawals on)</li>
+          <li><span class="legend__swatch legend__swatch--depleted"></span>Portfolio depleted</li>
+        </ul>
+        <div class="assumptions">
+          <p>
+            <strong>Spend-down withdrawal.</strong>
+            The largest initial retirement withdrawal whose future amounts rise
+            with inflation while ending net balance reaches $0 at end age. The
+            schedule is anchored at retirement and uses portfolio growth and
+            margin debt only.
+          </p>
+          <strong>How tax is modeled.</strong>
+          Taxable gains = gross withdrawal × gains %. Federal tax applies above
+          the inflated 0% LTCG bound and standard deduction. State tax applies to
+          all taxable gains without federal offsets. Gross withdrawal is solved
+          so its after-tax proceeds exactly equal net needed.
+        </div>
+      </section>
+
+      <footer class="footer">Planning tool, not tax or investment advice.</footer>
+    </div>
+    <script type="module" src="app.mjs"></script>
+  </body>
+</html>
