@@ -1,8 +1,15 @@
-import { DEFAULTS, parseNumber, project } from './model.mjs';
 import { ALL_COLUMNS, TEXT_COLS } from './columns.mjs';
+import { DEFAULTS, parseNumber, project } from './model.mjs';
+import {
+  DEFAULT_PRESETS,
+  formatPresetList,
+  parsePresetList,
+  presetTextFromSaved,
+} from './presets.mjs';
 
 const STORAGE_KEY = 'recalc2000xp-inputs';
 const COLUMNS_KEY = 'recalc2000xp-columns';
+const PRESETS_KEY = 'recalc2000xp-presets';
 const FIELD_IDS = Object.keys(DEFAULTS);
 
 const money = new Intl.NumberFormat(undefined, {
@@ -10,6 +17,21 @@ const money = new Intl.NumberFormat(undefined, {
   currency: 'USD',
   maximumFractionDigits: 0,
 });
+
+const PRESET_FIELDS = [
+  {
+    id: 'expectedCagr',
+    pickId: 'expectedCagrPick',
+    editorId: 'expectedCagrPresets',
+    format: (value) => `${value}%`,
+  },
+  {
+    id: 'desiredSpendToday',
+    pickId: 'desiredSpendTodayPick',
+    editorId: 'desiredSpendTodayPresets',
+    format: (value) => money.format(value),
+  },
+];
 
 const form = document.querySelector('#inputs-form');
 const errorsEl = document.querySelector('#errors');
@@ -103,6 +125,113 @@ function fillForm(inputs) {
 
 function saveInputs(inputs) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(inputs));
+}
+
+function defaultPresetTexts() {
+  const texts = {};
+  for (const field of PRESET_FIELDS) {
+    texts[field.id] = formatPresetList(DEFAULT_PRESETS[field.id]);
+  }
+  return texts;
+}
+
+function loadPresetTexts() {
+  const texts = defaultPresetTexts();
+  try {
+    const saved = JSON.parse(localStorage.getItem(PRESETS_KEY) || 'null');
+    if (!saved || typeof saved !== 'object') {
+      return texts;
+    }
+    for (const field of PRESET_FIELDS) {
+      texts[field.id] = presetTextFromSaved(
+        saved[field.id],
+        DEFAULT_PRESETS[field.id],
+      );
+    }
+    return texts;
+  }
+  catch {
+    return texts;
+  }
+}
+
+function savePresetTexts(texts) {
+  localStorage.setItem(PRESETS_KEY, JSON.stringify(texts));
+}
+
+function readPresetTexts() {
+  const texts = {};
+  for (const field of PRESET_FIELDS) {
+    texts[field.id] = form.elements[field.editorId].value;
+  }
+  return texts;
+}
+
+function fillPresetEditors(texts) {
+  for (const field of PRESET_FIELDS) {
+    form.elements[field.editorId].value = texts[field.id];
+  }
+}
+
+function presetValuesFromTexts(texts) {
+  const presets = {};
+  for (const field of PRESET_FIELDS) {
+    presets[field.id] = parsePresetList(texts[field.id]);
+  }
+  return presets;
+}
+
+function persistPresetEditors() {
+  const texts = readPresetTexts();
+  savePresetTexts(texts);
+  renderQuickPicks(presetValuesFromTexts(texts));
+}
+
+function isPresetEditor(target) {
+  return target instanceof HTMLTextAreaElement
+    && PRESET_FIELDS.some((field) => field.editorId === target.id);
+}
+
+function renderQuickPicks(presets) {
+  for (const field of PRESET_FIELDS) {
+    const select = form.elements[field.pickId];
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = 'Pick';
+    select.replaceChildren(placeholder);
+    for (const value of presets[field.id]) {
+      const option = document.createElement('option');
+      option.value = String(value);
+      option.textContent = field.format(value);
+      select.append(option);
+    }
+  }
+  syncQuickPicks();
+}
+
+function syncQuickPicks() {
+  for (const field of PRESET_FIELDS) {
+    const input = form.elements[field.id];
+    const select = form.elements[field.pickId];
+    const parsed = parseNumber(input.value);
+    const match = parsed.valid
+      ? [...select.options].find((option) => option.value !== ''
+        && parseNumber(option.value).value === parsed.value)
+      : null;
+    select.value = match ? match.value : '';
+  }
+}
+
+function applyQuickPick(select) {
+  if (!(select instanceof HTMLSelectElement) || select.value === '') {
+    return false;
+  }
+  const field = PRESET_FIELDS.find((item) => item.pickId === select.id);
+  if (!field) {
+    return false;
+  }
+  form.elements[field.id].value = select.value;
+  return true;
 }
 
 function renderFieldErrors(fieldErrors) {
@@ -382,6 +511,7 @@ function render() {
     renderOutlook(null);
     lastRows = [];
     renderTable(lastRows);
+    syncQuickPicks();
     return;
   }
 
@@ -390,6 +520,7 @@ function render() {
   renderOutlook(result.summary);
   lastRows = result.rows;
   renderTable(lastRows);
+  syncQuickPicks();
 }
 
 columnList.addEventListener('change', (event) => {
@@ -439,7 +570,26 @@ tableWrap.addEventListener('click', (event) => {
 });
 
 fillForm(loadInputs());
+const presetTexts = loadPresetTexts();
+fillPresetEditors(presetTexts);
+renderQuickPicks(presetValuesFromTexts(presetTexts));
 renderColumnPicker();
-form.addEventListener('input', render);
-form.addEventListener('change', render);
+form.addEventListener('input', (event) => {
+  if (isPresetEditor(event.target)) {
+    persistPresetEditors();
+    return;
+  }
+  if (event.target instanceof HTMLSelectElement) {
+    return;
+  }
+  render();
+});
+form.addEventListener('change', (event) => {
+  if (isPresetEditor(event.target)) {
+    persistPresetEditors();
+    return;
+  }
+  applyQuickPick(event.target);
+  render();
+});
 render();

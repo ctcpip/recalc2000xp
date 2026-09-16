@@ -12,6 +12,15 @@ test('includes the margin debt input', async () => {
   assert.match(html, /name="marginDebt"/);
 });
 
+test('includes configurable quick picks for CAGR and annual spending', async () => {
+  const html = await readFile(new URL('./index.html', import.meta.url), 'utf8');
+
+  assert.match(html, /id="expectedCagrPick"/);
+  assert.match(html, /id="desiredSpendTodayPick"/);
+  assert.match(html, /id="expectedCagrPresets"/);
+  assert.match(html, /id="desiredSpendTodayPresets"/);
+});
+
 test('exposes net balance columns to the selector and table renderer', () => {
   const columns = Object.fromEntries(ALL_COLUMNS.map((column) => [
     column.id,

@@ -257,6 +257,50 @@ body {
   align-content: start;
 }
 
+.field__combo {
+  display: flex;
+  gap: 0.4rem;
+  align-items: stretch;
+}
+
+.field__combo input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.field__combo select {
+  flex: 0 1 8.25rem;
+  width: 8.25rem;
+  min-width: 6.5rem;
+  max-width: 45%;
+}
+
+.presets-editor {
+  margin: 0.25rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.presets-editor summary {
+  cursor: pointer;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.presets-editor summary:hover {
+  color: var(--accent);
+}
+
+.presets-editor .field__hint {
+  margin: 0.65rem 0 0.85rem;
+}
+
+.presets-editor textarea {
+  resize: vertical;
+  min-height: 7.5rem;
+}
+
 label {
   font-size: 0.92rem;
   font-weight: 600;
@@ -271,7 +315,9 @@ label {
 }
 
 input[type="number"],
-input[type="text"] {
+input[type="text"],
+select,
+textarea {
   width: 100%;
   padding: 0.65rem 0.75rem;
   border: 1px solid var(--border);
@@ -283,7 +329,9 @@ input[type="text"] {
 }
 
 input[type="number"]:focus,
-input[type="text"]:focus {
+input[type="text"]:focus,
+select:focus,
+textarea:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--focus-ring);

@@ -42,7 +42,10 @@
             </div>
             <div class="field">
               <label for="expectedCagr">Expected CAGR (%)</label>
-              <input id="expectedCagr" name="expectedCagr" type="text" inputmode="decimal" autocomplete="off" required />
+              <div class="field__combo">
+                <input id="expectedCagr" name="expectedCagr" type="text" inputmode="decimal" autocomplete="off" required />
+                <select id="expectedCagrPick" aria-label="CAGR quick pick"></select>
+              </div>
             </div>
             <div class="field">
               <label for="monthlyContribution">Monthly contribution</label>
@@ -82,7 +85,10 @@
           <div class="field-grid">
             <div class="field">
               <label for="desiredSpendToday">Desired annual spending (today $)</label>
-              <input id="desiredSpendToday" name="desiredSpendToday" type="text" inputmode="decimal" autocomplete="off" required />
+              <div class="field__combo">
+                <input id="desiredSpendToday" name="desiredSpendToday" type="text" inputmode="decimal" autocomplete="off" required />
+                <select id="desiredSpendTodayPick" aria-label="Annual spending quick pick"></select>
+              </div>
             </div>
             <div class="field">
               <label for="fixedSpend">Fixed spend</label>
@@ -127,6 +133,24 @@
             </div>
           </div>
         </div>
+
+        <details class="presets-editor">
+          <summary>Quick-pick lists</summary>
+          <p class="field__hint">
+            One value per line, or comma-separated. Dollar signs and % are fine.
+            These fill the dropdowns next to CAGR and annual spending.
+          </p>
+          <div class="field-grid">
+            <div class="field">
+              <label for="expectedCagrPresets">CAGR presets (%)</label>
+              <textarea id="expectedCagrPresets" rows="6" spellcheck="false"></textarea>
+            </div>
+            <div class="field">
+              <label for="desiredSpendTodayPresets">Annual spending presets</label>
+              <textarea id="desiredSpendTodayPresets" rows="6" spellcheck="false"></textarea>
+            </div>
+          </div>
+        </details>
       </form>
 
       <section class="panel" id="outlook-section" aria-live="polite">

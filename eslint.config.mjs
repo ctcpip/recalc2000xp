@@ -8,6 +8,8 @@ export default [
         console: 'readonly',
         document: 'readonly',
         HTMLInputElement: 'readonly',
+        HTMLSelectElement: 'readonly',
+        HTMLTextAreaElement: 'readonly',
         localStorage: 'readonly',
         process: 'readonly',
       },
