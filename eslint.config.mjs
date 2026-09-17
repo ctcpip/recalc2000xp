@@ -7,6 +7,8 @@ export default [
       globals: {
         console: 'readonly',
         document: 'readonly',
+        Element: 'readonly',
+        HTMLButtonElement: 'readonly',
         HTMLInputElement: 'readonly',
         HTMLSelectElement: 'readonly',
         HTMLTextAreaElement: 'readonly',

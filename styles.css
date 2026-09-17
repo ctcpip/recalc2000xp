@@ -252,9 +252,105 @@ body {
 }
 
 .field {
+  position: relative;
   display: grid;
   gap: 0.45rem;
   align-content: start;
+}
+
+.field.is-open,
+.field:has(.field__info:hover):not(.is-closing) {
+  z-index: 2;
+}
+
+.field__label-row {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.field__label-row label {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.field__info {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--metric-bg);
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: help;
+  user-select: none;
+}
+
+.field__info::before {
+  content: "";
+  position: absolute;
+  inset: -0.4rem;
+}
+
+.field__info:hover,
+.field.is-open .field__info {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.field__info:focus {
+  outline: none;
+}
+
+.field__info:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.field__tip {
+  position: absolute;
+  z-index: 6;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  pointer-events: none;
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.field.is-open .field__tip,
+.field:has(.field__info:hover):not(.is-closing) .field__tip {
+  top: 100%;
+  left: 0;
+  right: 0;
+  width: auto;
+  height: auto;
+  margin: 0.3rem 0 0;
+  padding: 0.5rem 0.65rem;
+  overflow: visible;
+  clip: unset;
+  white-space: normal;
+  border: 1px solid var(--accent-soft-border);
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  box-shadow: var(--shadow);
+  color: var(--accent-soft-text);
 }
 
 .field__combo {

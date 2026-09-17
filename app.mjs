@@ -46,6 +46,7 @@ let lastRows = [];
 let columnState = loadColumnState();
 let dragSourceId = null;
 let selectedRowYear = null;
+let openHelpField = null;
 
 function defaultColumnState() {
   return ALL_COLUMNS.map((col) => ({ ...col, visible: true }));
@@ -234,6 +235,17 @@ function applyQuickPick(select) {
   return true;
 }
 
+function describedBy(id, errorId) {
+  const ids = [];
+  if (document.getElementById(`${id}-help`)) {
+    ids.push(`${id}-help`);
+  }
+  if (errorId) {
+    ids.push(errorId);
+  }
+  return ids.join(' ');
+}
+
 function renderFieldErrors(fieldErrors) {
   form.querySelectorAll('.field__error').forEach((error) => {
     error.remove();
@@ -243,8 +255,14 @@ function renderFieldErrors(fieldErrors) {
     const input = form.elements[id];
     const message = fieldErrors[id];
     input.removeAttribute('aria-invalid');
-    input.removeAttribute('aria-describedby');
     if (!message) {
+      const helpIds = describedBy(id);
+      if (helpIds) {
+        input.setAttribute('aria-describedby', helpIds);
+      }
+      else {
+        input.removeAttribute('aria-describedby');
+      }
       continue;
     }
 
@@ -254,7 +272,7 @@ function renderFieldErrors(fieldErrors) {
     error.className = 'validation-error field__error';
     error.textContent = message;
     input.setAttribute('aria-invalid', 'true');
-    input.setAttribute('aria-describedby', errorId);
+    input.setAttribute('aria-describedby', describedBy(id, errorId));
     input.closest('.field').append(error);
   }
 }
@@ -550,6 +568,74 @@ resetColumnsBtn.addEventListener('click', () => {
 });
 
 bindColumnDrag(tableWrap);
+
+function closeHelp() {
+  openHelpField?.classList.remove('is-open');
+  openHelpField = null;
+}
+
+function fieldInfoButton(target) {
+  if (!(target instanceof Element)) {
+    return null;
+  }
+  const info = target.closest('.field__info');
+  return info instanceof HTMLButtonElement && form.contains(info) ? info : null;
+}
+
+function suppressHoverHelp(field) {
+  field?.classList.add('is-closing');
+}
+
+form.addEventListener('mousedown', (event) => {
+  if (fieldInfoButton(event.target)) {
+    event.preventDefault();
+  }
+});
+
+document.addEventListener('click', (event) => {
+  const info = fieldInfoButton(event.target);
+  if (!info) {
+    closeHelp();
+    return;
+  }
+
+  const field = info.closest('.field');
+  const wasOpen = field === openHelpField;
+  closeHelp();
+  if (!field) {
+    return;
+  }
+  if (wasOpen) {
+    suppressHoverHelp(field);
+    return;
+  }
+  field.classList.remove('is-closing');
+  field.classList.add('is-open');
+  openHelpField = field;
+});
+
+form.addEventListener('pointerout', (event) => {
+  const info = fieldInfoButton(event.target);
+  if (!info) {
+    return;
+  }
+  const next = event.relatedTarget;
+  if (next instanceof Element && info.contains(next)) {
+    return;
+  }
+  info.closest('.field')?.classList.remove('is-closing');
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key !== 'Escape') {
+    return;
+  }
+  const hovered = form.querySelector('.field:has(.field__info:hover)');
+  const pinned = openHelpField;
+  closeHelp();
+  suppressHoverHelp(hovered);
+  suppressHoverHelp(pinned);
+});
 
 tableWrap.addEventListener('click', (event) => {
   const row = event.target.closest('tbody tr[data-row-year]');

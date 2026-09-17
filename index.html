@@ -33,27 +33,47 @@
           <h3>Portfolio</h3>
           <div class="field-grid">
             <div class="field">
-              <label for="currentAssets">Current assets</label>
-              <input id="currentAssets" name="currentAssets" type="text" inputmode="decimal" autocomplete="off" required />
+              <div class="field__label-row">
+                <label for="currentAssets">Current assets</label>
+                <button type="button" class="field__info" tabindex="-1" aria-label="About current assets">?</button>
+              </div>
+              <p id="currentAssets-help" class="field__tip">Portfolio value today, before subtracting margin debt.</p>
+              <input id="currentAssets" name="currentAssets" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="currentAssets-help" />
             </div>
             <div class="field">
-              <label for="marginDebt">Margin debt</label>
-              <input id="marginDebt" name="marginDebt" type="text" inputmode="decimal" autocomplete="off" required />
+              <div class="field__label-row">
+                <label for="marginDebt">Margin debt</label>
+                <button type="button" class="field__info" tabindex="-1" aria-label="About margin debt">?</button>
+              </div>
+              <p id="marginDebt-help" class="field__tip">Amount borrowed against the portfolio. Subtracted to get net balance; the model does not pay it down.</p>
+              <input id="marginDebt" name="marginDebt" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="marginDebt-help" />
             </div>
             <div class="field">
-              <label for="expectedCagr">Expected CAGR (%)</label>
+              <div class="field__label-row">
+                <label for="expectedCagr">Expected CAGR (%)</label>
+                <button type="button" class="field__info" tabindex="-1" aria-label="About expected CAGR">?</button>
+              </div>
+              <p id="expectedCagr-help" class="field__tip">Expected annual portfolio return. Applied to the start-of-year balance.</p>
               <div class="field__combo">
-                <input id="expectedCagr" name="expectedCagr" type="text" inputmode="decimal" autocomplete="off" required />
+                <input id="expectedCagr" name="expectedCagr" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="expectedCagr-help" />
                 <select id="expectedCagrPick" aria-label="CAGR quick pick"></select>
               </div>
             </div>
             <div class="field">
-              <label for="monthlyContribution">Monthly contribution</label>
-              <input id="monthlyContribution" name="monthlyContribution" type="text" inputmode="decimal" autocomplete="off" required />
+              <div class="field__label-row">
+                <label for="monthlyContribution">Monthly contribution</label>
+                <button type="button" class="field__info" tabindex="-1" aria-label="About monthly contribution">?</button>
+              </div>
+              <p id="monthlyContribution-help" class="field__tip">Added each month until retirement. Inflates yearly, then stops.</p>
+              <input id="monthlyContribution" name="monthlyContribution" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="monthlyContribution-help" />
             </div>
             <div class="field">
-              <label for="withdrawalRate">Withdrawal rate, safe (%)</label>
-              <input id="withdrawalRate" name="withdrawalRate" type="text" inputmode="decimal" autocomplete="off" required />
+              <div class="field__label-row">
+                <label for="withdrawalRate">Withdrawal rate, safe (%)</label>
+                <button type="button" class="field__info" tabindex="-1" aria-label="About the safe withdrawal rate">?</button>
+              </div>
+              <p id="withdrawalRate-help" class="field__tip">Benchmark "safe" rate (often 4%). Applied to the balance at retirement, then inflated. Outlook flags withdrawals above this.</p>
+              <input id="withdrawalRate" name="withdrawalRate" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="withdrawalRate-help" />
             </div>
           </div>
         </div>
@@ -62,20 +82,36 @@
           <h3>Ages</h3>
           <div class="field-grid">
             <div class="field">
-              <label for="currentAge">Current age</label>
-              <input id="currentAge" name="currentAge" type="number" min="0" max="120" step="1" required />
+              <div class="field__label-row">
+                <label for="currentAge">Current age</label>
+                <button type="button" class="field__info" tabindex="-1" aria-label="About current age">?</button>
+              </div>
+              <p id="currentAge-help" class="field__tip">Your age now. The first row is the remainder of this calendar year.</p>
+              <input id="currentAge" name="currentAge" type="number" min="0" max="120" step="1" required aria-describedby="currentAge-help" />
             </div>
             <div class="field">
-              <label for="retirementAge">Retirement age</label>
-              <input id="retirementAge" name="retirementAge" type="number" min="0" max="120" step="1" required />
+              <div class="field__label-row">
+                <label for="retirementAge">Retirement age</label>
+                <button type="button" class="field__info" tabindex="-1" aria-label="About retirement age">?</button>
+              </div>
+              <p id="retirementAge-help" class="field__tip">Contributions stop and withdrawals start. Use your current age if you are already retired.</p>
+              <input id="retirementAge" name="retirementAge" type="number" min="0" max="120" step="1" required aria-describedby="retirementAge-help" />
             </div>
             <div class="field">
-              <label for="endAge">End age</label>
-              <input id="endAge" name="endAge" type="number" min="0" max="120" step="1" required />
+              <div class="field__label-row">
+                <label for="endAge">End age</label>
+                <button type="button" class="field__info" tabindex="-1" aria-label="About end age">?</button>
+              </div>
+              <p id="endAge-help" class="field__tip">Last age modeled. Spend-down aims for a $0 net portfolio balance here.</p>
+              <input id="endAge" name="endAge" type="number" min="0" max="120" step="1" required aria-describedby="endAge-help" />
             </div>
             <div class="field">
-              <label for="socialSecurityAge">Social Security age</label>
-              <input id="socialSecurityAge" name="socialSecurityAge" type="number" min="0" max="120" step="1" required />
+              <div class="field__label-row">
+                <label for="socialSecurityAge">Social Security age</label>
+                <button type="button" class="field__info" tabindex="-1" aria-label="About Social Security age">?</button>
+              </div>
+              <p id="socialSecurityAge-help" class="field__tip">Age when Social Security starts. The benefit is inflated from today's dollars.</p>
+              <input id="socialSecurityAge" name="socialSecurityAge" type="number" min="0" max="120" step="1" required aria-describedby="socialSecurityAge-help" />
             </div>
           </div>
         </div>
@@ -84,25 +120,39 @@
           <h3>Spending &amp; income</h3>
           <div class="field-grid">
             <div class="field">
-              <label for="desiredSpendToday">Desired annual spending (today $)</label>
+              <div class="field__label-row">
+                <label for="desiredSpendToday">Desired annual spending (today $)</label>
+                <button type="button" class="field__info" tabindex="-1" aria-label="About desired annual spending">?</button>
+              </div>
+              <p id="desiredSpendToday-help" class="field__tip">Target annual spending in today's dollars, including any fixed spend.</p>
               <div class="field__combo">
-                <input id="desiredSpendToday" name="desiredSpendToday" type="text" inputmode="decimal" autocomplete="off" required />
+                <input id="desiredSpendToday" name="desiredSpendToday" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="desiredSpendToday-help" />
                 <select id="desiredSpendTodayPick" aria-label="Annual spending quick pick"></select>
               </div>
             </div>
             <div class="field">
-              <label for="fixedSpend">Fixed spend</label>
-              <input id="fixedSpend" name="fixedSpend" type="text" inputmode="decimal" autocomplete="off" required />
-              <p class="field__hint">Nominal dollars every year; not inflated (mortgage, etc.).</p>
+              <div class="field__label-row">
+                <label for="fixedSpend">Fixed spend</label>
+                <button type="button" class="field__info" tabindex="-1" aria-label="About fixed spend">?</button>
+              </div>
+              <p id="fixedSpend-help" class="field__tip">Part of spending that does not inflate (mortgage, etc.). Cannot exceed desired annual spending.</p>
+              <input id="fixedSpend" name="fixedSpend" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="fixedSpend-help" />
             </div>
             <div class="field">
-              <label for="inflation">Inflation (%)</label>
-              <input id="inflation" name="inflation" type="text" inputmode="decimal" autocomplete="off" required />
+              <div class="field__label-row">
+                <label for="inflation">Inflation (%)</label>
+                <button type="button" class="field__info" tabindex="-1" aria-label="About inflation">?</button>
+              </div>
+              <p id="inflation-help" class="field__tip">Raises spending, contributions, Social Security, and the federal tax thresholds each year.</p>
+              <input id="inflation" name="inflation" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="inflation-help" />
             </div>
             <div class="field">
-              <label for="ssBenefitToday">SS annual benefit (today $)</label>
-              <input id="ssBenefitToday" name="ssBenefitToday" type="text" inputmode="decimal" autocomplete="off" required />
-              <p class="field__hint">COLA = inflation, starting at SS age.</p>
+              <div class="field__label-row">
+                <label for="ssBenefitToday">SS annual benefit (today $)</label>
+                <button type="button" class="field__info" tabindex="-1" aria-label="About the Social Security benefit">?</button>
+              </div>
+              <p id="ssBenefitToday-help" class="field__tip">Annual benefit in today's dollars. COLA equals inflation, starting at SS age.</p>
+              <input id="ssBenefitToday" name="ssBenefitToday" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="ssBenefitToday-help" />
             </div>
           </div>
         </div>
@@ -111,25 +161,44 @@
           <h3>Taxes</h3>
           <div class="field-grid">
             <div class="field">
-              <label for="standardDeduction">Standard deduction</label>
-              <input id="standardDeduction" name="standardDeduction" type="text" inputmode="decimal" autocomplete="off" required />
+              <div class="field__label-row">
+                <label for="standardDeduction">Standard deduction</label>
+                <button type="button" class="field__info" tabindex="-1" aria-label="About the standard deduction">?</button>
+              </div>
+              <p id="standardDeduction-help" class="field__tip">Federal standard deduction in today's dollars. Inflated yearly and added to the 0% LTCG bound.</p>
+              <input id="standardDeduction" name="standardDeduction" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="standardDeduction-help" />
             </div>
             <div class="field">
-              <label for="gainsPercent">% of withdrawal = gains</label>
-              <input id="gainsPercent" name="gainsPercent" type="text" inputmode="decimal" autocomplete="off" required />
+              <div class="field__label-row">
+                <label for="gainsPercent">% of withdrawal = gains</label>
+                <button type="button" class="field__info" tabindex="-1" aria-label="About the gains percent">?</button>
+              </div>
+              <p id="gainsPercent-help" class="field__tip">Share of each withdrawal treated as taxable capital gains. The rest is assumed basis.</p>
+              <input id="gainsPercent" name="gainsPercent" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="gainsPercent-help" />
             </div>
             <div class="field">
-              <label for="ltcgRate">Federal LTCG tax rate (%)</label>
-              <input id="ltcgRate" name="ltcgRate" type="text" inputmode="decimal" autocomplete="off" required />
+              <div class="field__label-row">
+                <label for="ltcgRate">Federal LTCG tax rate (%)</label>
+                <button type="button" class="field__info" tabindex="-1" aria-label="About the federal LTCG tax rate">?</button>
+              </div>
+              <p id="ltcgRate-help" class="field__tip">Federal long-term capital gains rate on taxable gains above the inflated 0% bound plus standard deduction.</p>
+              <input id="ltcgRate" name="ltcgRate" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="ltcgRate-help" />
             </div>
             <div class="field">
-              <label for="stateCgRate">State capital gains tax rate (%)</label>
-              <input id="stateCgRate" name="stateCgRate" type="text" inputmode="decimal" autocomplete="off" required />
-              <p class="field__hint">Flat tax on taxable gains (e.g. IL 4.95%). Not reduced by the federal 0% bracket or standard deduction.</p>
+              <div class="field__label-row">
+                <label for="stateCgRate">State capital gains tax rate (%)</label>
+                <button type="button" class="field__info" tabindex="-1" aria-label="About the state capital gains tax rate">?</button>
+              </div>
+              <p id="stateCgRate-help" class="field__tip">Flat tax on all taxable gains. Not reduced by the federal 0% bracket or standard deduction.</p>
+              <input id="stateCgRate" name="stateCgRate" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="stateCgRate-help" />
             </div>
             <div class="field">
-              <label for="ltcgZeroBound">LTCG 0% bracket upper bound</label>
-              <input id="ltcgZeroBound" name="ltcgZeroBound" type="text" inputmode="decimal" autocomplete="off" required />
+              <div class="field__label-row">
+                <label for="ltcgZeroBound">LTCG 0% bracket upper bound</label>
+                <button type="button" class="field__info" tabindex="-1" aria-label="About the LTCG 0% bracket">?</button>
+              </div>
+              <p id="ltcgZeroBound-help" class="field__tip">Top of the 0% federal LTCG bracket in today's dollars. Inflated each year.</p>
+              <input id="ltcgZeroBound" name="ltcgZeroBound" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="ltcgZeroBound-help" />
             </div>
           </div>
         </div>
