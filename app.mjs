@@ -1,5 +1,5 @@
 import { ALL_COLUMNS, TEXT_COLS } from './columns.mjs';
-import { DEFAULTS, parseNumber, project } from './model.mjs';
+import { DEFAULTS, formatMoney, parseNumber, project } from './model.mjs';
 import {
   DEFAULT_PRESETS,
   formatPresetList,
@@ -12,12 +12,6 @@ const COLUMNS_KEY = 'recalc2000xp-columns';
 const PRESETS_KEY = 'recalc2000xp-presets';
 const FIELD_IDS = Object.keys(DEFAULTS);
 
-const money = new Intl.NumberFormat(undefined, {
-  style: 'currency',
-  currency: 'USD',
-  maximumFractionDigits: 0,
-});
-
 const PRESET_FIELDS = [
   {
     id: 'expectedCagr',
@@ -29,7 +23,8 @@ const PRESET_FIELDS = [
     id: 'desiredSpendToday',
     pickId: 'desiredSpendTodayPick',
     editorId: 'desiredSpendTodayPresets',
-    format: (value) => money.format(value),
+    format: (value) => formatMoney(value),
+    formatEditor: formatMoney,
   },
 ];
 
@@ -118,9 +113,25 @@ function readForm() {
   return data;
 }
 
+function isMoneyInput(el) {
+  return el instanceof HTMLInputElement && el.dataset.kind === 'money';
+}
+
+function normalizeMoneyInput(input) {
+  if (!isMoneyInput(input)) {
+    return;
+  }
+  const formatted = formatMoney(input.value);
+  if (input.value !== formatted) {
+    input.value = formatted;
+  }
+}
+
 function fillForm(inputs) {
   for (const id of FIELD_IDS) {
-    form.elements[id].value = inputs[id];
+    const input = form.elements[id];
+    input.value = inputs[id];
+    normalizeMoneyInput(input);
   }
 }
 
@@ -131,7 +142,10 @@ function saveInputs(inputs) {
 function defaultPresetTexts() {
   const texts = {};
   for (const field of PRESET_FIELDS) {
-    texts[field.id] = formatPresetList(DEFAULT_PRESETS[field.id]);
+    texts[field.id] = formatPresetList(
+      DEFAULT_PRESETS[field.id],
+      field.formatEditor,
+    );
   }
   return texts;
 }
@@ -147,6 +161,7 @@ function loadPresetTexts() {
       texts[field.id] = presetTextFromSaved(
         saved[field.id],
         DEFAULT_PRESETS[field.id],
+        field.formatEditor,
       );
     }
     return texts;
@@ -171,6 +186,24 @@ function readPresetTexts() {
 function fillPresetEditors(texts) {
   for (const field of PRESET_FIELDS) {
     form.elements[field.editorId].value = texts[field.id];
+  }
+}
+
+function normalizePresetEditor(editor) {
+  if (!(editor instanceof HTMLTextAreaElement)) {
+    return;
+  }
+  const field = PRESET_FIELDS.find((item) => item.editorId === editor.id);
+  if (!field?.formatEditor) {
+    return;
+  }
+  const values = parsePresetList(editor.value);
+  if (!values.length) {
+    return;
+  }
+  const formatted = formatPresetList(values, field.formatEditor);
+  if (editor.value !== formatted) {
+    editor.value = formatted;
   }
 }
 
@@ -231,7 +264,9 @@ function applyQuickPick(select) {
   if (!field) {
     return false;
   }
-  form.elements[field.id].value = select.value;
+  const input = form.elements[field.id];
+  input.value = select.value;
+  normalizeMoneyInput(input);
   return true;
 }
 
@@ -299,7 +334,7 @@ function renderOutlook(summary) {
 
   if (summary.lastsToEnd) {
     headline = `Portfolio lasts through age ${form.elements.endAge.value}`;
-    text = `Ending balance ${money.format(summary.endingBalance)}.`;
+    text = `Ending balance ${formatMoney(summary.endingBalance)}.`;
     if (summary.firstGapAge !== null) {
       tone = 'warn';
       title = 'Above the safe draw';
@@ -325,12 +360,12 @@ function renderOutlook(summary) {
     metric('First gap age', ageLabel(summary.firstGapAge)),
     metric('Balance at retirement', summary.balanceAtRetirement === null
       ? '—'
-      : money.format(summary.balanceAtRetirement)),
-    metric('Ending balance', money.format(summary.endingBalance)),
-    metric('Lifetime withdrawals', money.format(summary.totalWithdrawn)),
-    metric('Lifetime federal tax', money.format(summary.totalFederalTax)),
-    metric('Lifetime state tax', money.format(summary.totalStateTax)),
-    metric('Lifetime contributions', money.format(summary.totalContributed)),
+      : formatMoney(summary.balanceAtRetirement)),
+    metric('Ending balance', formatMoney(summary.endingBalance)),
+    metric('Lifetime withdrawals', formatMoney(summary.totalWithdrawn)),
+    metric('Lifetime federal tax', formatMoney(summary.totalFederalTax)),
+    metric('Lifetime state tax', formatMoney(summary.totalStateTax)),
+    metric('Lifetime contributions', formatMoney(summary.totalContributed)),
   ].join('');
 }
 
@@ -346,7 +381,7 @@ function cellClass(row, key) {
 
 function formatCell(key, raw, row) {
   if (key === 'spendDownWithdrawal' && row.spendDownShortfall > 0) {
-    return `Shortfall ${money.format(row.spendDownShortfall)}`;
+    return `Shortfall ${formatMoney(row.spendDownShortfall)}`;
   }
   if (typeof raw !== 'number') {
     return '';
@@ -357,7 +392,7 @@ function formatCell(key, raw, row) {
   if (key === 'yf') {
     return raw.toFixed(4);
   }
-  return money.format(raw);
+  return formatMoney(raw);
 }
 
 function renderTable(rows) {
@@ -672,10 +707,12 @@ form.addEventListener('input', (event) => {
 });
 form.addEventListener('change', (event) => {
   if (isPresetEditor(event.target)) {
+    normalizePresetEditor(event.target);
     persistPresetEditors();
     return;
   }
   applyQuickPick(event.target);
+  normalizeMoneyInput(event.target);
   render();
 });
 render();

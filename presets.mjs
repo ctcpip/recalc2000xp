@@ -24,18 +24,19 @@ function parsePresetList(text) {
   return values;
 }
 
-function formatPresetList(values) {
-  return values.map((value) => String(value)).join('\n');
+function formatPresetList(values, format) {
+  const stringify = format ?? String;
+  return values.map((value) => stringify(value)).join('\n');
 }
 
-function presetTextFromSaved(raw, fallbackValues) {
+function presetTextFromSaved(raw, fallbackValues, format) {
   if (typeof raw === 'string') {
     return raw;
   }
   if (Array.isArray(raw)) {
-    return formatPresetList(parsePresetList(raw));
+    return formatPresetList(parsePresetList(raw), format);
   }
-  return formatPresetList(fallbackValues);
+  return formatPresetList(fallbackValues, format);
 }
 
 export {

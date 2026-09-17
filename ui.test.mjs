@@ -38,6 +38,28 @@ test('each assumption input has a help tooltip', async () => {
   assert.equal(html.includes('class="field__info" tabindex="-1" aria-hidden'), false);
 });
 
+test('marks dollar amount inputs for currency formatting', async () => {
+  const html = await readFile(new URL('./index.html', import.meta.url), 'utf8');
+  const moneyIds = [
+    'currentAssets',
+    'marginDebt',
+    'monthlyContribution',
+    'desiredSpendToday',
+    'fixedSpend',
+    'ssBenefitToday',
+    'standardDeduction',
+    'ltcgZeroBound',
+    'desiredSpendTodayPresets',
+  ];
+
+  for (const id of moneyIds) {
+    assert.match(html, new RegExp(`id="${id}"[^>]*data-kind="money"`));
+  }
+
+  const moneyFields = html.match(/data-kind="money"/g) || [];
+  assert.equal(moneyFields.length, moneyIds.length);
+});
+
 test('exposes net balance columns to the selector and table renderer', () => {
   const columns = Object.fromEntries(ALL_COLUMNS.map((column) => [
     column.id,

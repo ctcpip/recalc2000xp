@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
+import { formatMoney } from './model.mjs';
 import {
   DEFAULT_PRESETS,
   formatPresetList,
@@ -52,4 +53,12 @@ test('restores saved editor text without rewriting in-progress lists', () => {
     '5\n7',
   );
   assert.equal(formatPresetList([5, 6, 7]), '5\n6\n7');
+  assert.equal(
+    formatPresetList([36_000, 1_000_000], formatMoney),
+    '$36,000\n$1,000,000',
+  );
+  assert.equal(
+    presetTextFromSaved([36_000, 42_000], DEFAULT_PRESETS.desiredSpendToday, formatMoney),
+    '$36,000\n$42,000',
+  );
 });

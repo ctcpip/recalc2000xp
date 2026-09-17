@@ -21,6 +21,12 @@ const DEFAULTS = {
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
+const money = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+});
+
 function parseNumber(value) {
   if (typeof value === 'number') {
     return {
@@ -48,6 +54,14 @@ function parseNumber(value) {
 function asNumber(value, fallback = 0) {
   const parsed = parseNumber(value);
   return parsed.valid ? parsed.value : fallback;
+}
+
+function formatMoney(value) {
+  const parsed = parseNumber(value);
+  if (!parsed.valid) {
+    return typeof value === 'string' ? value : String(value ?? '');
+  }
+  return money.format(parsed.value);
 }
 
 function pct(value) {
@@ -443,6 +457,7 @@ export {
   DEFAULTS,
   asNumber,
   calculateSpendDownPlan,
+  formatMoney,
   inflate,
   parseNumber,
   project,

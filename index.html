@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -38,7 +38,7 @@
                 <button type="button" class="field__info" tabindex="-1" aria-label="About current assets">?</button>
               </div>
               <p id="currentAssets-help" class="field__tip">Portfolio value today, before subtracting margin debt.</p>
-              <input id="currentAssets" name="currentAssets" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="currentAssets-help" />
+              <input id="currentAssets" name="currentAssets" type="text" inputmode="decimal" autocomplete="off" required data-kind="money" aria-describedby="currentAssets-help" />
             </div>
             <div class="field">
               <div class="field__label-row">
@@ -46,7 +46,7 @@
                 <button type="button" class="field__info" tabindex="-1" aria-label="About margin debt">?</button>
               </div>
               <p id="marginDebt-help" class="field__tip">Amount borrowed against the portfolio. Subtracted to get net balance; the model does not pay it down.</p>
-              <input id="marginDebt" name="marginDebt" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="marginDebt-help" />
+              <input id="marginDebt" name="marginDebt" type="text" inputmode="decimal" autocomplete="off" required data-kind="money" aria-describedby="marginDebt-help" />
             </div>
             <div class="field">
               <div class="field__label-row">
@@ -65,7 +65,7 @@
                 <button type="button" class="field__info" tabindex="-1" aria-label="About monthly contribution">?</button>
               </div>
               <p id="monthlyContribution-help" class="field__tip">Added each month until retirement. Inflates yearly, then stops.</p>
-              <input id="monthlyContribution" name="monthlyContribution" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="monthlyContribution-help" />
+              <input id="monthlyContribution" name="monthlyContribution" type="text" inputmode="decimal" autocomplete="off" required data-kind="money" aria-describedby="monthlyContribution-help" />
             </div>
             <div class="field">
               <div class="field__label-row">
@@ -126,7 +126,7 @@
               </div>
               <p id="desiredSpendToday-help" class="field__tip">Target annual spending in today's dollars, including any fixed spend.</p>
               <div class="field__combo">
-                <input id="desiredSpendToday" name="desiredSpendToday" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="desiredSpendToday-help" />
+                <input id="desiredSpendToday" name="desiredSpendToday" type="text" inputmode="decimal" autocomplete="off" required data-kind="money" aria-describedby="desiredSpendToday-help" />
                 <select id="desiredSpendTodayPick" aria-label="Annual spending quick pick"></select>
               </div>
             </div>
@@ -136,7 +136,7 @@
                 <button type="button" class="field__info" tabindex="-1" aria-label="About fixed spend">?</button>
               </div>
               <p id="fixedSpend-help" class="field__tip">Part of spending that does not inflate (mortgage, etc.). Cannot exceed desired annual spending.</p>
-              <input id="fixedSpend" name="fixedSpend" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="fixedSpend-help" />
+              <input id="fixedSpend" name="fixedSpend" type="text" inputmode="decimal" autocomplete="off" required data-kind="money" aria-describedby="fixedSpend-help" />
             </div>
             <div class="field">
               <div class="field__label-row">
@@ -152,7 +152,7 @@
                 <button type="button" class="field__info" tabindex="-1" aria-label="About the Social Security benefit">?</button>
               </div>
               <p id="ssBenefitToday-help" class="field__tip">Annual benefit in today's dollars. COLA equals inflation, starting at SS age.</p>
-              <input id="ssBenefitToday" name="ssBenefitToday" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="ssBenefitToday-help" />
+              <input id="ssBenefitToday" name="ssBenefitToday" type="text" inputmode="decimal" autocomplete="off" required data-kind="money" aria-describedby="ssBenefitToday-help" />
             </div>
           </div>
         </div>
@@ -166,7 +166,7 @@
                 <button type="button" class="field__info" tabindex="-1" aria-label="About the standard deduction">?</button>
               </div>
               <p id="standardDeduction-help" class="field__tip">Federal standard deduction in today's dollars. Inflated yearly and added to the 0% LTCG bound.</p>
-              <input id="standardDeduction" name="standardDeduction" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="standardDeduction-help" />
+              <input id="standardDeduction" name="standardDeduction" type="text" inputmode="decimal" autocomplete="off" required data-kind="money" aria-describedby="standardDeduction-help" />
             </div>
             <div class="field">
               <div class="field__label-row">
@@ -198,7 +198,7 @@
                 <button type="button" class="field__info" tabindex="-1" aria-label="About the LTCG 0% bracket">?</button>
               </div>
               <p id="ltcgZeroBound-help" class="field__tip">Top of the 0% federal LTCG bracket in today's dollars. Inflated each year.</p>
-              <input id="ltcgZeroBound" name="ltcgZeroBound" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="ltcgZeroBound-help" />
+              <input id="ltcgZeroBound" name="ltcgZeroBound" type="text" inputmode="decimal" autocomplete="off" required data-kind="money" aria-describedby="ltcgZeroBound-help" />
             </div>
           </div>
         </div>
@@ -216,7 +216,7 @@
             </div>
             <div class="field">
               <label for="desiredSpendTodayPresets">Annual spending presets</label>
-              <textarea id="desiredSpendTodayPresets" rows="6" spellcheck="false"></textarea>
+              <textarea id="desiredSpendTodayPresets" rows="6" spellcheck="false" data-kind="money"></textarea>
             </div>
           </div>
         </details>

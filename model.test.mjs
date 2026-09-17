@@ -5,6 +5,7 @@ import {
   DEFAULTS,
   asNumber,
   calculateSpendDownPlan,
+  formatMoney,
   parseNumber,
   project,
   remainingYearFraction,
@@ -26,6 +27,16 @@ test('parses formatted money, percentages, and accounting negatives', () => {
   assert.equal(asNumber('(2,500)'), -2_500);
   assert.equal(asNumber('', 42), 42);
   assert.equal(parseNumber('$1,00x').valid, false);
+});
+
+test('formats dollar amounts as en-US currency', () => {
+  assert.equal(formatMoney(1_000_000), '$1,000,000');
+  assert.equal(formatMoney('$1000000'), '$1,000,000');
+  assert.equal(formatMoney('1,000,000'), '$1,000,000');
+  assert.equal(formatMoney(0), '$0');
+  assert.equal(formatMoney(''), '');
+  assert.equal(formatMoney('abc'), 'abc');
+  assert.equal(parseNumber(formatMoney(100_000)).value, 100_000);
 });
 
 test('calculates the inclusive fraction of the calendar year remaining', () => {
